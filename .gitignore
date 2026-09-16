@@ -1,0 +1,14 @@
+# Ignore LinkedIn draft posts
+*-linkedin.md
+*format-guide.md
+template.md
+# Ignore generated images
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.svg
+
+# Ignore alternate posts unless explicitly wanted
+alternate-*
