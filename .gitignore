@@ -2,6 +2,8 @@
 *-linkedin.md
 *format-guide.md
 template.md
+*.terraform*
+terraform.*
 # Ignore generated images
 *.png
 *.jpg
