@@ -2,8 +2,6 @@
 *-linkedin.md
 *format-guide.md
 template.md
-*.terraform*
-terraform.*
 # Ignore generated images
 *.png
 *.jpg
@@ -14,3 +12,9 @@ terraform.*
 
 # Ignore alternate posts unless explicitly wanted
 alternate-*
+
+# Terraform local state and provider cache
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
