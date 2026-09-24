@@ -1,0 +1,120 @@
+resource "aws_vpc" "lab_vpc" {
+  cidr_block = var.vpc_cidr
+  enable_dns_support = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "day25-lab-vpc"
+    Environment = "lab"
+  }
+}
+
+resource "aws_subnet" "public_sub" {
+  vpc_id = aws_vpc.lab_vpc.id
+  cidr_block = var.public_subnet_cidr
+  availability_zone = "${var.aws_region}a"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "day25-lab-public-sub"
+  }
+}
+
+resource "aws_internet_gateway" "lab_igw" {
+  vpc_id = aws_vpc.lab_vpc.id
+
+  tags = {
+    Name = "day25-lab-igw"
+  }
+}
+
+resource "aws_route_table" "public_rt" {
+  vpc_id = aws_vpc.lab_vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.lab_igw.id
+  }
+
+  tags = {
+    Name = "day25-lab-rt-public"
+  }
+}
+
+resource "aws_route_table_association" "public_assoc" {
+  subnet_id = aws_subnet.public_sub.id
+  route_table_id = aws_route_table.public_rt.id
+}
+
+resource "aws_security_group" "web_sg" {
+  name = "day25-lab-ec2-sg"
+  description = "Allow inbound SSH and HTTP traffic"
+  vpc_id = aws_vpc.lab_vpc.id
+
+  ingress {
+    description = "SSH from trusted IP"
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "HTTP web traffic"
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    description = "Allow all outbound traffic"
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "day25-lab-ec2-sg"
+  }
+}
+
+data "aws_ami" "amazon_linux_2023" {
+  most_recent = true
+  owners = ["amazon"]
+
+  filter {
+    name ="name"
+    values = ["al2023-ami-2023.*-x86_64"]
+  }
+
+  filter {
+    name = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
+resource "aws_instance" "web_server" {
+  ami = data.aws_ami.amazon_linux_2023.id
+  instance_type = var.instance_type
+  key_name = var.key_name
+
+  subnet_id = aws_subnet.public_sub.id
+  vpc_security_group_ids = [aws_security_group.web_sg.id]
+  associate_public_ip_address = true
+
+  user_data = <<-EOF
+              #!/bin/bash
+              dnf update -y
+              dnf install -y httpd
+              systemctl start httpd
+              systemctl enable httpd
+              echo "<h1>Day 25: Terraform EC2 Provisioning Successful</h1><p>Instance: $(hostname -f)</p>" > /var/www/html/index.html
+              EOF
+
+  tags = {
+    Name = "day25-lab-web-server"
+    Environment = "lab"
+  }
+}
