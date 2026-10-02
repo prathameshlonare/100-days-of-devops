@@ -7,7 +7,7 @@
 </p>
 
 [![Curriculum](https://img.shields.io/badge/Curriculum-100--Day%20DevOps-0ea5e9?style=flat-square)](https://github.com/prathameshlonare)
-[![Active Phase](https://img.shields.io/badge/Active%20Phase-Phase%2005%3A%20Terraform%20%26%20AWS-22c55e?style=flat-square)](#curriculum-roadmap)
+[![Active Phase](https://img.shields.io/badge/Active%20Phase-Phase%2006%3A%20Kubernetes-22c55e?style=flat-square)](#curriculum-roadmap)
 [![Methodology](https://img.shields.io/badge/Methodology-Break--Fix%20Engineering-f59e0b?style=flat-square)](#the-break-fix-engine)
 [![Cloud Footprint](https://img.shields.io/badge/Cloud%20Billing-%240%20Net%20Footprint-64748b?style=flat-square)](#the-break-fix-engine)
 
@@ -65,8 +65,8 @@ The complete 100-day curriculum spans 10 progressive phases, taking fundamentals
 | **02** | **Git Mastery & Version Control** | Days 08–11 | Fast-forward merges, 3-way conflict resolution, detached HEAD recovery | `Completed` |
 | **03** | **Containers & Multi-Stage Builds** | Days 12–16 | Dockerfile hardening, multi-stage caching, bridge networks, volumes | `Completed` |
 | **04** | **CI/CD Automation Pipelines** | Days 17–19 | GitHub Actions workflows, secrets handling, Trivy container security scans | `Completed` |
-| **05** | **AWS Fundamentals & Terraform** | Days 20–30 | VPC topology, SG vs NACL, S3 state locking, dynamic modules, tfvars | `In Progress` |
-| **06** | **Kubernetes Support & Orchestration** | Days 31–48 | Pod scheduling, CrashLoopBackOff triage, Services, Ingress, Helm | `Planned` |
+| **05** | **AWS Fundamentals & Terraform** | Days 20–30 | VPC topology, SG vs NACL, S3 state locking, dynamic modules, tfvars | `Completed` |
+| **06** | **Kubernetes Support & Orchestration** | Days 31–48 | Pod scheduling, CrashLoopBackOff triage, Services, Ingress, Helm | `In Progress` |
 | **07** | **Production Capstone Rebuild** | Days 49–58 | Complete hand-written infra rebuild of past serverless platforms | `Planned` |
 | **08** | **Monitoring & Observability** | Days 59–67 | CloudWatch alarms, synthetic monitoring, log aggregation, Prometheus | `Planned` |
 | **09** | **Production Drills & Verbal RCA** | Days 68–75 | Live mock interview break-fix triage, architectural tradeoffs | `Planned` |
@@ -76,18 +76,18 @@ The complete 100-day curriculum spans 10 progressive phases, taking fundamentals
 
 ## Daily Module Architecture
 
-Every day's directory in this repository is completely self-contained. Navigate directly into any `day-XXX/` folder above to inspect:
+Every day's directory in this repository is self-contained within its respective phase folder. Navigate directly into any `phase-XX-<name>/day-XXX/` directory above to inspect:
 
 ```text
-day-XXX/
+phase-XX-<name>/day-XXX/
 ├── day-XXX.md             # Core build guide, failure injection, and Root Cause Analysis (RCA)
 ├── day-XXX-quiz.md        # Scenario-based technical assessment quiz (5 scenario-heavy questions)
 ├── day-XXX-interview.md   # Verbal RCA interview defense drill (where applicable)
-└── <lab-code>/            # Hand-crafted Terraform modules, Dockerfiles, or bash automation
+└── <lab-code>/            # Hand-crafted Terraform modules, Dockerfiles, or Kubernetes manifests
 ```
 
-### Navigating Days
-GitHub automatically lists all 100 daily directories above in chronological order (`day-001/` through `day-100/`). Simply click into any daily folder to access the complete lesson, break scenario, and lab artifacts.
+### Navigating Phases & Days
+The repository is organized into distinct engineering phases (`phase-01-linux/` through `phase-10-sre/`). Navigate into any phase directory to access the daily lesson modules, break-fix scenarios, and reproducible lab code.
 
 ---
 
@@ -97,14 +97,14 @@ Every module includes reproducible code and explicit teardown instructions.
 
 ### Prerequisites
 - **AWS CLI v2** configured with Free Tier credentials (`eu-north-1`).
-- **Terraform >= 1.5.0** and **Docker Engine >= 24.0.0**.
+- **Terraform >= 1.5.0** and **Docker Engine >= 24.0.0** (with Kubernetes enabled).
 - **Ubuntu / Debian / WSL2** environment with standard networking utilities (`ss`, `curl`, `dig`, `ip`).
 
 ### Execution Pattern
 
 ```bash
 # 1. Enter any targeted lab directory
-cd day-XXX/<lab-directory>
+cd phase-XX-<name>/day-XXX/<lab-directory>
 
 # 2. Inspect the failure scenario and triage plan
 # Read day-XXX.md for the injected fault, symptom observations, and RCA logs

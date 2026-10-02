@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: day31-web-server
+  labels:
+    app: dorm-dish-web
+    env: dev
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx:1.25-alpine
+      ports:
+        - containerPort: 80
+      resources:
+        limits: 
+          memory: "128Mi"
+          cpu: "200m"
+        requests:
+          memory: "64Mi"
+          cpu: "100m"
