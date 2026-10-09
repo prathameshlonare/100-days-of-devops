@@ -1,66 +1,19 @@
-# Day 13 — Practice Quiz: Docker Compose
+# Day 013 Quiz — Docker Compose (scenario-heavy)
 
-**Score: 5/5** ✅
-
-## Question 1: Multiple Choice
-
-What does `docker compose down` do compared to `docker compose stop`?
-
-A. It stops containers but keeps them for restart 
-B. It stops containers AND removes them, along with networks created by the compose file [x]
-C. It only removes networks, not containers
-D. It restarts all containers
+Answer all 5. Type answers, I grade.
 
 ---
 
-## Question 2: Command Syntax
+1. `docker compose -p day13lab ps` shows both `Up`. `logs frontend` shows `[API-CHECK] FAIL connect ECONNREFUSED 127.0.0.1:4000 url=http://localhost:4000`. Backend logs show nothing. List 3 checks in order, state what each proves, and name root cause + exact one-line fix.
 
-Write the docker compose command to:
-1. Start all services in the background - docker compose up -d
-2. View live logs from only the `backend` service - docker compose logs backend
-3. Drop into a shell inside the running `frontend` container - docker compose exec frontend sh
+2. You change `API_URL` in `docker-compose.yml` but run `docker compose -p day13lab up -d` without `--build` after editing a Dockerfile. Frontend still shows old behavior. Explain why compose did not rebuild, the difference `up -d` vs `up -d --build`, and the verify command that proves new image is live.
 
----
+3. Frontend `curl http://backend:4000/api/health` from inside via `exec` returns JSON, but `curl http://localhost:4000/api/health` via same exec refuses. Both services share one compose network. Explain why one works and the other fails, referencing net namespace + `nslookup backend` evidence.
 
-## Question 3: Scenario-Based
+4. You remove `depends_on: [backend]` and cold-start the stack. Frontend log shows one `FAIL` then `OK` on retry, backend is fine. Explain what `depends_on` actually guarantees vs what it does not (health), and one prevention (retry or healthcheck) for production.
 
-Your `docker-compose.yml` defines three services: `frontend`, `backend`, and `database`. You run `docker compose up -d` and check with `docker compose ps`. The frontend and backend show "Up" but the database shows "Exit 1".
-
-What steps would you take to diagnose why the database failed to start?
-docker compose logs database
-docker compose logs --tail=100 database
-docker compose ps -a
-docker inspect database
+5. You run `docker compose -p day13lab up -d` twice with different `-p` names (`day13lab` vs `day13b`). Now `curl localhost:3000` fails with port conflict. Explain why project name isolates networks/containers but host ports still collide, and the fix (down one project or change host port).
 
 ---
 
-## Question 4: True/False with Explanation
-
-**Statement:** If you define `depends_on: backend` in the `frontend` service, Docker Compose guarantees that the backend's application (not just the container) is ready to accept connections before starting the frontend.
-
-True or False? Explain why.
-False
-it does not guarantees the readiness, it means that backend starts before frontend, depends on gurantees the startup order
----
-
-## Question 5: Fill-in-the-Blank
-
-Complete this docker-compose.yml snippet so that the `backend` service gets its configuration from an external file:
-
-```yaml
-services:
-  backend:
-    build: ./backend
-    ports:
-      - "4000:4000"
-    env_file:
-      - ./backend/.env
-```
-
-What is the filename format that Docker Compose expects by default when you use this directive?
-
----
-
-## Bonus Question
-
-Your team has two compose files: `docker-compose.yml` for development and `docker-compose.prod.yml` for production. How do you run the production compose file without manually merging them?
+**Submit with `done day 013` + your 5 answers.**
